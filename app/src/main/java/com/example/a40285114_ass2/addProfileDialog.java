@@ -23,10 +23,12 @@ public class addProfileDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_add_profile_dialog, container, false);
 
-        nameEditText = view.findViewById(R.id.nameEditText);
-        surnameEditText = view.findViewById(R.id.surnameEditText);
-        idEditText = view.findViewById(R.id.idEditText);
-        gpaEditText = view.findViewById(R.id.gpaEditText);
+        EditText nameEditText    = view.findViewById(R.id.nameEditText);
+        EditText surnameEditText = view.findViewById(R.id.surnameEditText);
+        EditText idEditText      = view.findViewById(R.id.idEditText);
+        EditText gpaEditText     = view.findViewById(R.id.gpaEditText);
+        Button cancelButton      = view.findViewById(R.id.cancelButton);
+        Button saveButton        = view.findViewById(R.id.saveButton);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,49 +37,46 @@ public class addProfileDialog extends DialogFragment {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(v -> {
+            String name    = nameEditText.getText().toString().trim();
+            String surname = surnameEditText.getText().toString().trim();
+            String idStr   = idEditText.getText().toString().trim();
+            String gpaStr  = gpaEditText.getText().toString().trim();
 
-            @Override
-            public void onClick(View v) {
-                    String name = nameEditText.getText().toString().trim();
-                    String surname = surnameEditText.getText().toString().trim();
-                    String idString = idEditText.getText().toString().trim();
-                    String gpaString = gpaEditText.getText().toString().trim();
+            if (name.isEmpty() || surname.isEmpty() || idStr.isEmpty() || gpaStr.isEmpty()) {
+                Toast.makeText(requireContext(), "Fields cannot be empty!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (!name.matches("[A-Za-z]+") || !surname.matches("[A-Za-z]+")) {
+                Toast.makeText(requireContext(), "Name/Surname: letters only.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            int pid;
+            try { pid = Integer.parseInt(idStr); } catch (Exception e) { pid = -1; }
+            if (pid < 10000000 || pid > 99999999) {
+                Toast.makeText(requireContext(), "ID must be 8 digits (10000000–99999999).", Toast.LENGTH_LONG).show();
+                return;
+            }
+            float gpa;
+            try { gpa = Float.parseFloat(gpaStr); } catch (Exception e) { gpa = -1f; }
+            if (gpa < 0f || gpa > 4.3f) {
+                Toast.makeText(requireContext(), "GPA must be between 0 and 4.3.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-                    int profileId;
-                    try{
-                        profileId = Integer.parseInt(idString);
-                    }catch (Exception e){
-                        profileId = -1;
-                    }
-
-                    float gpa;
-                    try {
-                        gpa = Float.parseFloat(gpaString);
-                    } catch (Exception e){
-                        gpa = -1f;
-                    }
-
-                    if (name.isEmpty() || surname.isEmpty() || idString.isEmpty() || gpaString.isEmpty()){
-                        Toast.makeText(getContext().getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_LONG).show();
-                    }else
-                    if (!name.matches("[A-Za-z]+") || !surname.matches("[A-Za-z]+")){
-                        Toast.makeText(getContext().getApplicationContext(), "Name/Surname must be letters only", Toast.LENGTH_LONG).show();
-                    }else
-                    if (profileId < 10000000 || profileId > 99999999){
-                        Toast.makeText(getContext().getApplicationContext(), "ID Must be 8 Digits", Toast.LENGTH_LONG).show();
-                    }else
-                    if (gpa < 0f || gpa > 4.3f){
-                        Toast.makeText(getContext().getApplicationContext(), "GPA Must be between 0.0 and 4.3", Toast.LENGTH_LONG).show();
-                    }else{
-                        DatabaseHelper dbHelper = new DatabaseHelper(getContext().getApplicationContext());
-                        dbHelper.addProfile(new Profile(profileId, name, surname, gpa, ""));
-                        Toast.makeText(getContext().getApplicationContext(), "Added Profile Successfully", Toast.LENGTH_LONG).show();
-                        if (getActivity() != null) ((MainActivity)getActivity()).updateList();
-                        dismiss();
-                    }
+            DatabaseHelper db = new DatabaseHelper(requireContext());
+            long result = db.addProfile(new Profile(pid, name, surname, gpa, ""));
+            if (result == -1) {
+                Toast.makeText(requireContext(), "Duplicate ID or DB error.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(requireContext(), "Profile saved!", Toast.LENGTH_LONG).show();
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).updateList();  // or updateList() if that's your method name
+                }
+                dismiss();
             }
         });
+
         return view;
     }
 }

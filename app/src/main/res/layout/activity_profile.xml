@@ -16,4 +16,26 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView android:id="@+id/nameTextView" />
+    <TextView android:id="@+id/surnameTextView" />
+    <TextView android:id="@+id/idTextView" />
+    <TextView android:id="@+id/gpaTextView" />
+
+    <TextView
+        android:id="@+id/headerTextView"
+        android:text="Access History"
+        android:textStyle="bold"
+        android:paddingTop="12dp"/>
+
+    <ListView
+        android:id="@+id/accessListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:dividerHeight="8dp"/>
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:text="Delete Profile" />
 </androidx.constraintlayout.widget.ConstraintLayout>

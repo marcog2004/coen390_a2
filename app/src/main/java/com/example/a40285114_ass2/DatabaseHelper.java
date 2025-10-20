@@ -39,10 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_ACCESS =
                 "CREATE TABLE " + Config.TABLE_ACCESS + " (" +
-                        Config.COLUMN_ACCESS_ID         + " INTEGER NOT NULL, " +
-                        Config.COLUMN_ACC_PROFILE_ID    + " INTEGER NOT NULL, " +
-                        Config.COLUMN_TYPE              + " TEXT NOT NULL, " +
-                        Config.COLUMN_TIMESTAMP         + " TEXT NOT NULL, " +
+                        Config.COLUMN_ACCESS_ID      + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // FIXED
+                        Config.COLUMN_ACC_PROFILE_ID + " INTEGER NOT NULL, " +
+                        Config.COLUMN_TYPE           + " TEXT NOT NULL, " +
+                        Config.COLUMN_TIMESTAMP      + " TEXT NOT NULL, " +
                         "FOREIGN KEY(" + Config.COLUMN_ACC_PROFILE_ID + ") REFERENCES " +
                         Config.TABLE_PROFILES + "(" + Config.COLUMN_PROFILE_ID + ")" +
                         ");";
@@ -62,20 +62,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return new SimpleDateFormat("yyyy-MM-dd @ HH:mm:ss", Locale.CANADA).format(new Date());
     }
 
-    public long addProfile(Profile profile){
+    public long addProfile(Profile p){
         long id = -1;
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Config.COLUMN_PROFILE_ID, profile.getProfileId());
-        contentValues.put(Config.COLUMN_SURNAME, profile.getSurname());
-        contentValues.put(Config.COLUMN_NAME, profile.getName());
-        contentValues.put(Config.COLUMN_GPA, profile.getGpa());
-        contentValues.put(Config.COLUMN_CREATION_TIME, now());
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(Config.COLUMN_PROFILE_ID,    p.getProfileId());
+        cv.put(Config.COLUMN_SURNAME,       p.getSurname());
+        cv.put(Config.COLUMN_NAME,          p.getName());
+        cv.put(Config.COLUMN_GPA,           p.getGpa());
+        cv.put(Config.COLUMN_CREATION_TIME, now());
 
         try {
-            id = db.insertOrThrow(Config.TABLE_PROFILES, null, contentValues);
-        }catch (SQLiteException e){
+            id = db.insertOrThrow(Config.TABLE_PROFILES, null, cv);
+            if (id != -1) addAccess(p.getProfileId(), "created"); // FIX: add creation entry
+        } catch (SQLiteException e) {
             Toast.makeText(context, "Insert Profile Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return id;
