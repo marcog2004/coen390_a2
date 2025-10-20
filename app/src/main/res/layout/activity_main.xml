@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Profiles: 0 | Ordered by surname"
+        android:text="@string/no_profiles"
         android:textStyle="bold"
         android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/toolbarMainActivity"
