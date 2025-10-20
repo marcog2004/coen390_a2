@@ -19,7 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     private int profileId;
     private DatabaseHelper db;
 
-    private TextView nameTextView, surnameTextView, idTextView, gpaTextView, headerTextView;
+    private TextView nameTextView, surnameTextView, idTextView, gpaTextView, headerTextView, createdTextView;
     private ListView accessListView;
     private ArrayAdapter<String> accessAdapter;
 
@@ -47,7 +47,9 @@ public class ProfileActivity extends AppCompatActivity {
         gpaTextView = findViewById(R.id.gpaTextView);
         headerTextView = findViewById(R.id.headerTextView);
         accessListView = findViewById(R.id.accessListView);
+        createdTextView = findViewById(R.id.createdTextView);
         Button deleteButton = findViewById(R.id.deleteButton);
+
 
         accessAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
         accessListView.setAdapter(accessAdapter);
@@ -56,8 +58,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (p != null){
             nameTextView.setText("Name: " + p.getName());
             surnameTextView.setText("Surname: "+ p.getSurname());
-            idTextView.setText("ID#: " + p.getProfileId());
+            idTextView.setText("ID: " + p.getProfileId());
             gpaTextView.setText("GPA: " + p.getGpa());
+            createdTextView.setText("Profile created: " + p.getCreationTime());
         }
         headerTextView.setText("Access History");
 
