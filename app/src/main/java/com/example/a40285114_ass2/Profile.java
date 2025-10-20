@@ -1,12 +1,14 @@
 package com.example.a40285114_ass2;
 
 public class Profile {
+    // variables
     private final int profileId;
     private String name;
     private final String surname;
     private final float gpa;
     private final String creationTime;
 
+    // constructor
     public Profile(int profileId, String name, String surname, float gpa, String creationTime){
         this.profileId = profileId;
         this.name = name;
@@ -15,6 +17,7 @@ public class Profile {
         this.creationTime = creationTime;
     }
 
+    // getters and setters
     public int getProfileId(){
         return profileId;
     }

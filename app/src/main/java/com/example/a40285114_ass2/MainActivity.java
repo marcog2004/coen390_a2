@@ -20,6 +20,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    // ui elements
     Toolbar toolbar = null;
 
     private TextView summaryTextView;
@@ -47,28 +48,32 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
         listView.setAdapter(adapter);
 
+        // action button opens dialog fragment
         floatingActionButton.setOnClickListener(view -> {
             addProfileDialog dialog = new addProfileDialog();
             dialog.show(getSupportFragmentManager(), "AddProfileFragment");
         });
 
+        // items in list navigate to profile activity
         listView.setOnItemClickListener((parent, view, position, id) -> {
             int profileId = idIndex.get(position);
-            Intent i = new Intent(this, ProfileActivity.class);
-            i.putExtra("profileId", profileId);
-            startActivity(i);
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtra("profileId", profileId);
+            startActivity(intent);
         });
 
         updateList();
 
     }
 
+    // refresh list of profiles on resume
     @Override
     protected void onResume() {
         super.onResume();
         updateList();
     }
 
+    // refresh lsit of profiles
     @SuppressLint("SetTextI18n")
     public void updateList(){
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // option menu to change display mode
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -107,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // toggle display mode
     public boolean onOptionsItemSelected(MenuItem item){
         if (item.getItemId() == R.id.display_toggle) {
             displayByName = !displayByName;

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 public class addProfileDialog extends DialogFragment {
+    // ui elements
     protected EditText nameEditText, surnameEditText, idEditText, gpaEditText;
     protected Button cancelButton, saveButton;
 
@@ -30,6 +31,7 @@ public class addProfileDialog extends DialogFragment {
         cancelButton      = view.findViewById(R.id.cancelButton);
         saveButton        = view.findViewById(R.id.saveButton);
 
+        // button listeners
         cancelButton.setOnClickListener(view1 -> dismiss());
 
         saveButton.setOnClickListener(v -> {
@@ -59,7 +61,7 @@ public class addProfileDialog extends DialogFragment {
                 return;
             }
 
-
+            // add profile if field elements are entered properly
             DatabaseHelper db = new DatabaseHelper(requireContext());
             long result = db.addProfile(new Profile(pid, name, surname, gpa, ""));
             if (result == -1) {

@@ -18,14 +18,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
-    private static final int DATABASE_VERSION = 2;
+    // adapted from tutorial databasehelper example
+    private static final int DATABASE_VERSION = 1;
     private final Context context;
     public DatabaseHelper(@Nullable Context context) {
         super(context, Config.DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
+    // table creation based on tutorial
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_PROFILE =
@@ -58,10 +59,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // current time function
     private String now(){
         return new SimpleDateFormat("yyyy-MM-dd @ HH:mm:ss", Locale.CANADA).format(new Date());
     }
 
+    // add profile function
     public long addProfile(Profile p){
         long id = -1;
         SQLiteDatabase db = getWritableDatabase();
@@ -81,16 +84,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    // remove profile function
     public void deleteProfile(int profileId){
         SQLiteDatabase db = getWritableDatabase();
         try {
-            addAccess(profileId, "deleted");
+            addAccess(profileId, "Deleted");
             db.delete(Config.TABLE_PROFILES, Config.COLUMN_PROFILE_ID + "=?", new String[]{String.valueOf(profileId)});
         } catch (SQLiteException e){
             Toast.makeText(context, "Delete Profile Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
+    // getter by id
     public Profile getProfileById(int profileId){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = null;
@@ -111,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return profile;
     }
 
+    // get all profiles by name
     public List<Profile> getProfilesByName(){
         List<Profile> profileListName = new ArrayList<>();
 
@@ -135,6 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return profileListName;
     }
 
+    // all profiles by id
     public List<Profile> getProfilesById(){
         List <Profile> profileListId = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -156,6 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return profileListId;
     }
 
+    // get total amount of profiles
     public int getAmtProfiles(){
         int amt = 0;
         SQLiteDatabase db = getReadableDatabase();
@@ -167,6 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return amt;
     }
 
+    // add access to database
     public void addAccess(int profileId, String type){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -180,6 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // get accesses for specific profile
     public List<Access> getAccessesForProfile(int profileId){
         List <Access> accessesForProfile = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();

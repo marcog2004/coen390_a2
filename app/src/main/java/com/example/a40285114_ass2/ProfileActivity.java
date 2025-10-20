@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    // ui elements
     Toolbar toolbar = null;
 
     private int profileId;
@@ -54,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         accessAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
         accessListView.setAdapter(accessAdapter);
 
+        // set textviews for profile
         Profile p = db.getProfileById(profileId);
         if (p != null){
             nameTextView.setText("Name: " + p.getName());
@@ -75,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    // refresh list of accesses
     private void refreshAccess(){
         accessAdapter.clear();
         for (Access a : db.getAccessesForProfile(profileId)){
@@ -83,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
         accessAdapter.notifyDataSetChanged();
     }
 
+    // add a closed access when leaving activity
     @Override
     protected void onPause(){
         super.onPause();
@@ -91,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    // back button
     @Override
     public boolean onSupportNavigateUp(){
         finish();

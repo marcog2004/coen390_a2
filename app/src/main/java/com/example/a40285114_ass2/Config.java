@@ -1,6 +1,8 @@
 package com.example.a40285114_ass2;
 
 public class Config {
+
+    // sqlite config
     public static final String DATABASE_NAME = "db";
     public static final String TABLE_PROFILES = "profile";
     public static final String COLUMN_PROFILE_ID = "profile_id";
