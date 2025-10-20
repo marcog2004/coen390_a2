@@ -12,4 +12,5 @@
     <string name="delete_profile">Delete Profile</string>
     <string name="access_history">Access History</string>
     <string name="change_display_mode">Change Display Mode</string>
+    <string name="add">Add</string>
 </resources>
