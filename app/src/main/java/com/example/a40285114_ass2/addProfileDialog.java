@@ -64,6 +64,7 @@ public class addProfileDialog extends DialogFragment {
                 return;
             }
 
+
             DatabaseHelper db = new DatabaseHelper(requireContext());
             long result = db.addProfile(new Profile(pid, name, surname, gpa, ""));
             if (result == -1) {
@@ -71,7 +72,7 @@ public class addProfileDialog extends DialogFragment {
             } else {
                 Toast.makeText(requireContext(), "Profile saved!", Toast.LENGTH_LONG).show();
                 if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).updateList();  // or updateList() if that's your method name
+                    ((MainActivity) getActivity()).updateList();
                 }
                 dismiss();
             }

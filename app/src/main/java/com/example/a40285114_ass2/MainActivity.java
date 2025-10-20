@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             int profileId = idIndex.get(position);
-            Intent intent = new Intent(this, ProfileActivity.class);
-            intent.putExtra("profileId", profileId);
-            startActivity(intent);
+            Intent i = new Intent(this, ProfileActivity.class);
+            i.putExtra("profileId", profileId);
+            startActivity(i);
         });
 
         updateList();
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         if (item.getItemId() == R.id.display_toggle) {
             displayByName = !displayByName;
-            invalidateOptionsMenu();  // FIX: not invalidateMenu()
-            updateList();             // or updateList()
+            invalidateOptionsMenu();
+            updateList();
             return true;
         }
         return super.onOptionsItemSelected(item);

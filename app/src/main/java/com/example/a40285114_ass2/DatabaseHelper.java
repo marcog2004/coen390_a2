@@ -19,7 +19,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private Context context;
     public DatabaseHelper(@Nullable Context context) {
         super(context, Config.DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_ACCESS =
                 "CREATE TABLE " + Config.TABLE_ACCESS + " (" +
-                        Config.COLUMN_ACCESS_ID      + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // FIXED
+                        Config.COLUMN_ACCESS_ID      + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         Config.COLUMN_ACC_PROFILE_ID + " INTEGER NOT NULL, " +
                         Config.COLUMN_TYPE           + " TEXT NOT NULL, " +
                         Config.COLUMN_TIMESTAMP      + " TEXT NOT NULL, " +
