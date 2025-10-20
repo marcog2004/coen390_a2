@@ -1,10 +1,10 @@
 package com.example.a40285114_ass2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     private TextView summaryTextView;
-    private ListView listView;
-    private FloatingActionButton floatingActionButton;
 
     private boolean displayByName = true;
     private ArrayAdapter<String> adapter;
@@ -37,24 +35,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // set up toolbar
-        toolbar = (Toolbar) findViewById(R.id.toolbarMainActivity);
+        toolbar = findViewById(R.id.toolbarMainActivity);
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("Main Activity");
 
         summaryTextView = findViewById(R.id.summaryTextView);
-        listView = findViewById(R.id.listView);
-        floatingActionButton = findViewById(R.id.floatingActionButton);
+        ListView listView = findViewById(R.id.listView);
+        FloatingActionButton floatingActionButton = findViewById(R.id.floatingActionButton);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
         listView.setAdapter(adapter);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                addProfileDialog dialog = new addProfileDialog();
-                dialog.show(getSupportFragmentManager(), "AddProfileFragment");
-            }
+        floatingActionButton.setOnClickListener(view -> {
+            addProfileDialog dialog = new addProfileDialog();
+            dialog.show(getSupportFragmentManager(), "AddProfileFragment");
         });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -74,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         updateList();
     }
 
+    @SuppressLint("SetTextI18n")
     public void updateList(){
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         List<Profile> profiles = displayByName ? db.getProfilesByName() : db.getProfilesById();
@@ -94,8 +90,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.addAll(rows);
         adapter.notifyDataSetChanged();
 
-        String displayMode = displayByName ? "By Name (Surname, Name)" : "By ID";
-        summaryTextView.setText("Profiles: " + db.getAmtProfiles() + " | Display: " + displayMode);
+        String displayMode = displayByName ? "by Surname" : "by ID";
+        if (db.getAmtProfiles() == 1){
+            summaryTextView.setText(db.getAmtProfiles() + " Profile, "  + displayMode);
+        }else{
+            summaryTextView.setText(db.getAmtProfiles() + " Profiles, "  + displayMode);
+        }
+
     }
 
     @Override

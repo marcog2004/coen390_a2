@@ -20,7 +20,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
-    private Context context;
+    private final Context context;
     public DatabaseHelper(@Nullable Context context) {
         super(context, Config.DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -74,23 +74,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             id = db.insertOrThrow(Config.TABLE_PROFILES, null, cv);
-            if (id != -1) addAccess(p.getProfileId(), "created"); // FIX: add creation entry
+            if (id != -1) addAccess(p.getProfileId(), "Created");
         } catch (SQLiteException e) {
             Toast.makeText(context, "Insert Profile Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return id;
     }
 
-    public int deleteProfile(int profileId){
-        int rows = 0;
+    public void deleteProfile(int profileId){
         SQLiteDatabase db = getWritableDatabase();
         try {
             addAccess(profileId, "deleted");
-            rows = db.delete(Config.TABLE_PROFILES, Config.COLUMN_PROFILE_ID + "=?", new String[]{String.valueOf(profileId)});
+            db.delete(Config.TABLE_PROFILES, Config.COLUMN_PROFILE_ID + "=?", new String[]{String.valueOf(profileId)});
         } catch (SQLiteException e){
             Toast.makeText(context, "Delete Profile Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return rows;
     }
 
     public Profile getProfileById(int profileId){
@@ -99,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Profile profile = null;
         try {
             cursor = db.query(Config.TABLE_PROFILES, null, Config.COLUMN_PROFILE_ID+"=?", new String[]{ String.valueOf(profileId) }, null, null, null);
-            if (cursor != null && cursor.moveToFirst()){
+            if (cursor.moveToFirst()){
                 @SuppressLint("Range") int pId = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_PROFILE_ID));
                 @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_NAME));
                 @SuppressLint("Range") String surname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
@@ -118,12 +116,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = null;
+        try (Cursor cursor = db.query(Config.TABLE_PROFILES, null, null, null, null, null, Config.COLUMN_SURNAME + " COLLATE NOCASE ASC, " + Config.COLUMN_NAME + " COLLATE NOCASE ASC")) {
 
-        try{
-            cursor = db.query(Config.TABLE_PROFILES, null, null, null, null, null, Config.COLUMN_SURNAME + " COLLATE NOCASE ASC, " + Config.COLUMN_NAME + " COLLATE NOCASE ASC");
-
-            if (cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 do {
                     @SuppressLint("Range") int pId = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_PROFILE_ID));
                     @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_NAME));
@@ -136,18 +131,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         } catch (SQLiteException e) {
             Toast.makeText(context, "Get Profiles by Name Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        } finally { if (cursor != null) cursor.close(); }
+        }
         return profileListName;
     }
 
     public List<Profile> getProfilesById(){
         List <Profile> profileListId = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try{
-            cursor = db.query(Config.TABLE_PROFILES, null, null, null, null, null, Config.COLUMN_PROFILE_ID + " ASC");
-            if (cursor.moveToFirst()){
-                do{
+        try (Cursor cursor = db.query(Config.TABLE_PROFILES, null, null, null, null, null, Config.COLUMN_PROFILE_ID + " ASC")) {
+            if (cursor.moveToFirst()) {
+                do {
                     @SuppressLint("Range") int pId = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_PROFILE_ID));
                     @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(Config.COLUMN_NAME));
                     @SuppressLint("Range") String surname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
@@ -155,49 +148,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     @SuppressLint("Range") String time = cursor.getString(cursor.getColumnIndex(Config.COLUMN_CREATION_TIME));
                     Profile profile = new Profile(pId, name, surname, gpa, time);
                     profileListId.add(profile);
-                }while (cursor.moveToNext());
+                } while (cursor.moveToNext());
             }
-        } catch (SQLiteException e){
+        } catch (SQLiteException e) {
             Toast.makeText(context, "Get Profiles by ID Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        } finally {if (cursor != null) cursor.close(); }
+        }
         return profileListId;
     }
 
     public int getAmtProfiles(){
         int amt = 0;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = null;
-        try{
-            cursor = db.rawQuery("SELECT COUNT(*) FROM " + Config.TABLE_PROFILES, null);
+        try (Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + Config.TABLE_PROFILES, null)) {
             if (cursor.moveToFirst()) amt = cursor.getInt(0);
-        } catch (SQLiteException e){
+        } catch (SQLiteException e) {
             Toast.makeText(context, "Amount Profiles Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        } finally { if (cursor != null) cursor.close(); }
+        }
         return amt;
     }
 
-    public long addAccess(int profileId, String type){
-        long id = -1;
+    public void addAccess(int profileId, String type){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.COLUMN_ACC_PROFILE_ID, profileId);
         contentValues.put(Config.COLUMN_TYPE, type);
         contentValues.put(Config.COLUMN_TIMESTAMP, now());
         try {
-            id = db.insertOrThrow(Config.TABLE_ACCESS, null, contentValues);
+            db.insertOrThrow(Config.TABLE_ACCESS, null, contentValues);
         } catch (SQLiteException e){
             Toast.makeText(context, "Insert Access Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return id;
     }
 
     public List<Access> getAccessesForProfile(int profileId){
         List <Access> accessesForProfile = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            cursor = db.query(Config.TABLE_ACCESS, null, Config.COLUMN_ACC_PROFILE_ID + "=?", new String[]{ String.valueOf(profileId)}, null, null, Config.COLUMN_ACCESS_ID + " ASC");
-            if (cursor.moveToFirst()){
+        try (Cursor cursor = db.query(Config.TABLE_ACCESS, null, Config.COLUMN_ACC_PROFILE_ID + "=?", new String[]{String.valueOf(profileId)}, null, null, Config.COLUMN_ACCESS_ID + " ASC")) {
+            if (cursor.moveToFirst()) {
                 do {
                     @SuppressLint("Range") long accessId = cursor.getLong(cursor.getColumnIndex(Config.COLUMN_ACCESS_ID));
                     @SuppressLint("Range") int pId = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ACC_PROFILE_ID));
@@ -207,9 +194,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     accessesForProfile.add(access);
                 } while (cursor.moveToNext());
             }
-        } catch (SQLiteException e){
+        } catch (SQLiteException e) {
             Toast.makeText(context, "Get Accesses Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        } finally { if (cursor != null) cursor.close(); }
+        }
         return accessesForProfile;
     }
 }

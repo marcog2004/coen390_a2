@@ -23,19 +23,14 @@ public class addProfileDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_add_profile_dialog, container, false);
 
-        EditText nameEditText    = view.findViewById(R.id.nameEditText);
-        EditText surnameEditText = view.findViewById(R.id.surnameEditText);
-        EditText idEditText      = view.findViewById(R.id.idEditText);
-        EditText gpaEditText     = view.findViewById(R.id.gpaEditText);
-        Button cancelButton      = view.findViewById(R.id.cancelButton);
-        Button saveButton        = view.findViewById(R.id.saveButton);
+        nameEditText    = view.findViewById(R.id.nameEditText);
+        surnameEditText = view.findViewById(R.id.surnameEditText);
+        idEditText      = view.findViewById(R.id.idEditText);
+        gpaEditText     = view.findViewById(R.id.gpaEditText);
+        cancelButton      = view.findViewById(R.id.cancelButton);
+        saveButton        = view.findViewById(R.id.saveButton);
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                dismiss();
-            }
-        });
+        cancelButton.setOnClickListener(view1 -> dismiss());
 
         saveButton.setOnClickListener(v -> {
             String name    = nameEditText.getText().toString().trim();

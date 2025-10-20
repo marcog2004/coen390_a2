@@ -5,7 +5,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:layout_width="match_parent"
 android:layout_height="match_parent">
 
-<!-- Toolbar (unchanged) -->
 <androidx.appcompat.widget.Toolbar
     android:id="@+id/toolbarProfileActivity"
     android:layout_width="0dp"
@@ -14,12 +13,11 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
 
-<!-- Header -->
 <TextView
     android:id="@+id/profileHeaderTextView"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:text="User Profile"
+    android:text="@string/user_profile"
     android:textStyle="bold"
     android:textSize="16sp"
     android:paddingStart="12dp"
@@ -29,7 +27,6 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
 
-<!-- Surname -->
 <TextView
     android:id="@+id/surnameTextView"
     android:layout_width="0dp"
@@ -41,7 +38,6 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
 
-<!-- Name -->
 <TextView
     android:id="@+id/nameTextView"
     android:layout_width="0dp"
@@ -53,7 +49,6 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
 
-<!-- ID -->
 <TextView
     android:id="@+id/idTextView"
     android:layout_width="0dp"
@@ -65,7 +60,6 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
 
-<!-- GPA -->
 <TextView
     android:id="@+id/gpaTextView"
     android:layout_width="0dp"
@@ -77,7 +71,6 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
 
-<!-- Profile created -->
 <TextView
     android:id="@+id/createdTextView"
     android:layout_width="0dp"
@@ -89,12 +82,11 @@ android:layout_height="match_parent">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
 
-<!-- Access header (unchanged ID; just make sure it sits below created) -->
 <TextView
     android:id="@+id/headerTextView"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:text="Access History"
+    android:text="@string/access_history"
     android:textStyle="bold"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
@@ -117,7 +109,7 @@ android:layout_height="match_parent">
         android:id="@+id/deleteButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Delete Profile"
+        android:text="@string/delete_profile"
         android:layout_margin="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,6 @@
 package com.example.a40285114_ass2;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,10 +20,9 @@ public class ProfileActivity extends AppCompatActivity {
     private int profileId;
     private DatabaseHelper db;
 
-    private TextView nameTextView, surnameTextView, idTextView, gpaTextView, headerTextView, createdTextView;
-    private ListView accessListView;
     private ArrayAdapter<String> accessAdapter;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // set up toolbar
-        toolbar = (Toolbar) findViewById(R.id.toolbarProfileActivity);
+        toolbar = findViewById(R.id.toolbarProfileActivity);
         setSupportActionBar(toolbar);
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,15 +39,15 @@ public class ProfileActivity extends AppCompatActivity {
         db = new DatabaseHelper(getApplicationContext());
         profileId = getIntent().getIntExtra("profileId", -1);
 
-        db.addAccess(profileId, "opened");
+        db.addAccess(profileId, "Opened");
 
-        nameTextView = findViewById(R.id.nameTextView);
-        surnameTextView = findViewById(R.id.surnameTextView);
-        idTextView = findViewById(R.id.idTextView);
-        gpaTextView = findViewById(R.id.gpaTextView);
-        headerTextView = findViewById(R.id.headerTextView);
-        accessListView = findViewById(R.id.accessListView);
-        createdTextView = findViewById(R.id.createdTextView);
+        TextView nameTextView = findViewById(R.id.nameTextView);
+        TextView surnameTextView = findViewById(R.id.surnameTextView);
+        TextView idTextView = findViewById(R.id.idTextView);
+        TextView gpaTextView = findViewById(R.id.gpaTextView);
+        TextView headerTextView = findViewById(R.id.headerTextView);
+        ListView accessListView = findViewById(R.id.accessListView);
+        TextView createdTextView = findViewById(R.id.createdTextView);
         Button deleteButton = findViewById(R.id.deleteButton);
 
 
@@ -67,8 +67,8 @@ public class ProfileActivity extends AppCompatActivity {
         refreshAccess();
 
         deleteButton.setOnClickListener(v -> {
-            db.addAccess(profileId, "profile deleted");  // or "deleted"
-            db.deleteProfile(profileId);                 // keep history
+            db.addAccess(profileId, "profile deleted");
+            db.deleteProfile(profileId);
             finish();
 
         });
@@ -87,7 +87,13 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         if (isFinishing()){
-            db.addAccess(profileId, "closed");
+            db.addAccess(profileId, "Closed");
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }
